@@ -22,26 +22,31 @@ THE SOFTWARE.
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
 
 	"github.com/kmtym1998/swbotctl/cfg"
 	"github.com/kmtym1998/swbotctl/cmd"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var cfgFilePath string
+var version string
 
 func main() {
 	ec := cfg.NewExecutionContext()
+	gc := cfg.NewGlobalConfig()
 
 	rootCmd := cmd.NewRootCmd()
-	cobra.OnInitialize(initConfig)
-	cobra.OnFinalize()
+	cobra.OnInitialize(func() {
+		if err := ec.Prepare(version); err != nil {
+			log.Fatal(err)
+		}
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.swbotctl.yaml)")
+		if err := gc.Prepare(cfgFilePath); err != nil {
+			log.Fatal(err)
+		}
+	})
+
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	rootCmd.AddCommand(
@@ -50,28 +55,5 @@ func main() {
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
-	}
-}
-
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".swbotctl" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".swbotctl")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 }
