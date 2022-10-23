@@ -56,5 +56,8 @@ func (g *GlobalCfg) setConfigFileContentVal(path string) error {
 		return err
 	}
 
+	g.Token = cfgFileContent.Token
+	g.Secret = cfgFileContent.Secret
+
 	return nil
 }

@@ -30,7 +30,7 @@ import (
 )
 
 var cfgFilePath string
-var version string
+var version string = "0.0.0"
 
 func main() {
 	ec := cfg.NewExecutionContext()
@@ -51,6 +51,8 @@ func main() {
 
 	rootCmd.AddCommand(
 		cmd.NewVersionCmd(ec),
+		cmd.NewTurnOnCmd(ec, &gc),
+		cmd.NewTurnOffCmd(ec, &gc),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
