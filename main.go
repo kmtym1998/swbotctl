@@ -35,6 +35,9 @@ var version string = "0.0.0"
 func main() {
 	ec := cfg.NewExecutionContext()
 	gc := cfg.NewGlobalConfig()
+	if err := gc.Prepare(cfgFilePath); err != nil {
+		log.Fatal(err)
+	}
 
 	rootCmd := cmd.NewRootCmd()
 	cobra.OnInitialize(func() {

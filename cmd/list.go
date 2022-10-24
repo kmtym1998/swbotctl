@@ -4,24 +4,32 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/kmtym1998/swbotctl/cfg"
-	"github.com/kmtym1998/swbotctl/switchbot"
-	"github.com/kmtym1998/swbotctl/switchbot/enum"
 	"github.com/spf13/cobra"
 )
 
 func NewListCmd(ec *cfg.ExecutionContext) *cobra.Command {
 	return &cobra.Command{
 		Use:   "リスト",
-		Short: "turn the selected device on",
-		Long:  "turn the selected device on",
+		Short: "登録されているデバイスのリストを表示する",
+		Long:  "登録されているデバイスのリストを表示する",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return ec.SwitchBotAPIClient.SendDeviceControlCommands(
-				"02-202210162051-61289937",
-				switchbot.SendDeviceControlCommandsRequest{
-					Command: enum.TurnOn.String(),
-				},
-			)
+			data, err := ec.SwitchBotAPIClient.ListDevices()
+			if err != nil {
+				return err
+			}
+
+			for _, item := range data.Body.DeviceList {
+				fmt.Println(item.DeviceName)
+			}
+
+			for _, item := range data.Body.InfraredRemoteList {
+				fmt.Println(item.DeviceName)
+			}
+
+			return nil
 		},
 	}
 }

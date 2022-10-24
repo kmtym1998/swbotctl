@@ -30,6 +30,8 @@ func (sw *Switchbot) SendDeviceControlCommands(
 		sw.APIBaseURL, sw.APIVersion, deviceID,
 	)
 
+	log.Println("sw.Token", sw.Token)
+
 	b, err := json.Marshal(input)
 	if err != nil {
 		return err
@@ -65,7 +67,7 @@ func (sw *Switchbot) ListDevices() (*ListDeviceResponse, error) {
 		sw.APIBaseURL, sw.APIVersion,
 	)
 	resp, err := sw.SendRequest(
-		http.MethodPost,
+		http.MethodGet,
 		endpoint,
 		nil,
 		map[string]string{
