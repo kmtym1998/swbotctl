@@ -21,12 +21,6 @@ func NewClient(token, secret string) Switchbot {
 	}
 }
 
-type SendDeviceControlCommandsRequest struct {
-	Command     string  `json:"command"`
-	Parameter   *string `json:"parameter,omitempty"`
-	CommandType *string `json:"commandType,omitempty"`
-}
-
 func (sw *Switchbot) SendDeviceControlCommands(
 	deviceID string,
 	input SendDeviceControlCommandsRequest,
@@ -63,4 +57,36 @@ func (sw *Switchbot) SendDeviceControlCommands(
 	log.Println(string(b))
 
 	return nil
+}
+
+func (sw *Switchbot) ListDevices() (*ListDeviceResponse, error) {
+	endpoint := fmt.Sprintf(
+		"%s/%s/devices",
+		sw.APIBaseURL, sw.APIVersion,
+	)
+	resp, err := sw.SendRequest(
+		http.MethodPost,
+		endpoint,
+		nil,
+		map[string]string{
+			"content-type":  "application/json",
+			"authorization": sw.Token,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var data ListDeviceResponse
+	if err := json.Unmarshal(b, &data); err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
