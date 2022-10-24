@@ -84,7 +84,7 @@ func (sw *Switchbot) ListDevices() (*ListDeviceResponse, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected response from switchbot API: %v", err)
+		return nil, fmt.Errorf("unexpected response from switchbot API: %v", string(b))
 	}
 
 	var data ListDeviceResponse
