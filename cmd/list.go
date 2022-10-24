@@ -12,17 +12,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewTurnOffCmd(ec *cfg.ExecutionContext) *cobra.Command {
+func NewListCmd(ec *cfg.ExecutionContext) *cobra.Command {
 	return &cobra.Command{
-		Use:   "turn-off",
-		Short: "turn the selected device off",
-		Long:  "turn the selected device off",
+		Use:   "リスト",
+		Short: "turn the selected device on",
+		Long:  "turn the selected device on",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			log.Println("レアコイルを消します")
+			log.Println("レアコイルをつけます")
 			return ec.SwitchBotAPIClient.SendDeviceControlCommands(
 				"02-202210162051-61289937",
 				switchbot.SendDeviceControlCommandsRequest{
-					Command: enum.TurnOff.String(),
+					Command: enum.TurnOn.String(),
 				},
 			)
 		},

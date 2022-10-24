@@ -38,7 +38,7 @@ func main() {
 
 	rootCmd := cmd.NewRootCmd()
 	cobra.OnInitialize(func() {
-		if err := ec.Prepare(version); err != nil {
+		if err := ec.Prepare(version, gc.Token, gc.Secret); err != nil {
 			log.Fatal(err)
 		}
 
@@ -51,8 +51,9 @@ func main() {
 
 	rootCmd.AddCommand(
 		cmd.NewVersionCmd(ec),
-		cmd.NewTurnOnCmd(ec, &gc),
-		cmd.NewTurnOffCmd(ec, &gc),
+		cmd.NewTurnOnCmd(ec),
+		cmd.NewTurnOffCmd(ec),
+		cmd.NewListCmd(ec),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
