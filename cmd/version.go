@@ -16,7 +16,7 @@ func NewVersionCmd(ec *cfg.ExecutionContext) *cobra.Command {
 		Short: "Print cli version",
 		Long:  "Print cli version",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("version called")
+			fmt.Println(ec.Version)
 		},
 	}
 }
