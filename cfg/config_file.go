@@ -8,14 +8,16 @@ import (
 )
 
 type GlobalCfg struct {
-	Token  string
-	Secret string
+	DeviceListSize int
+	Token          string
+	Secret         string
 }
 
 // 設定ファイルのスキーマ
 type cfgFile struct {
-	Token  string `json:"token"`
-	Secret string `json:"secret"`
+	DeviceListSize int    `json:"deviceListSize"`
+	Token          string `json:"token"`
+	Secret         string `json:"secret"`
 }
 
 func NewGlobalConfig() GlobalCfg {
@@ -56,6 +58,7 @@ func (g *GlobalCfg) setConfigFileContentVal(path string) error {
 		return err
 	}
 
+	g.DeviceListSize = cfgFileContent.DeviceListSize
 	g.Token = cfgFileContent.Token
 	g.Secret = cfgFileContent.Secret
 

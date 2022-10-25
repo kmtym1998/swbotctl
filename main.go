@@ -41,7 +41,7 @@ func main() {
 
 	rootCmd := cmd.NewRootCmd()
 	cobra.OnInitialize(func() {
-		if err := ec.Prepare(version, gc.Token, gc.Secret); err != nil {
+		if err := ec.Prepare(version, gc.Token, gc.Secret, &gc); err != nil {
 			log.Fatal(err)
 		}
 

@@ -10,6 +10,7 @@ import (
 )
 
 type ExecutionContext struct {
+	Cfg                *GlobalCfg
 	Spinner            *spinner.Spinner
 	Stderr, Stdout     io.Writer
 	SwitchBotAPIClient *switchbot.Switchbot
@@ -20,13 +21,14 @@ func NewExecutionContext() *ExecutionContext {
 	return &ExecutionContext{}
 }
 
-func (ec *ExecutionContext) Prepare(v, token, secret string) error {
+func (ec *ExecutionContext) Prepare(v, token, secret string, gc *GlobalCfg) error {
 	if err := ec.setVersion(v); err != nil {
 		return err
 	}
 
 	ec.setupSpinner()
 	ec.setSwitchbotAPIClient(token, secret)
+	ec.Cfg = gc
 
 	return nil
 }

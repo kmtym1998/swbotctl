@@ -30,8 +30,6 @@ func (sw *Switchbot) SendDeviceControlCommands(
 		sw.APIBaseURL, sw.APIVersion, deviceID,
 	)
 
-	log.Println("sw.Token", sw.Token)
-
 	b, err := json.Marshal(input)
 	if err != nil {
 		return err
