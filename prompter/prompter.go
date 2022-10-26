@@ -20,8 +20,6 @@ func GetInputFromPrompt(selections []PromptSelection, opts *PromptSelectionOpts)
 		Label: opts.Label,
 		Items: selections,
 		Size:  opts.Size,
-		// FIXME: 効かない
-		// NOTE: https://qiita.com/gorilla0513/items/565e89d778c35724adfa
 		Searcher: func(input string, index int) bool {
 			selected := selections[index]
 			name := strings.Replace(strings.ToLower(selected.DisplayName), " ", "", -1)
@@ -29,6 +27,7 @@ func GetInputFromPrompt(selections []PromptSelection, opts *PromptSelectionOpts)
 
 			return strings.Contains(name, input)
 		},
+		StartInSearchMode: true,
 		Templates: &promptui.SelectTemplates{
 			Label:    "{{ . }}",
 			Active:   "\U0001F9A9 {{ .DisplayName | cyan }}",       // 選択したモノだけ色を変えたいなどの場合、選択したデータの出力フォーマット定義できます。

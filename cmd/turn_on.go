@@ -66,21 +66,45 @@ func NewTurnOnCmd(ec *cfg.ExecutionContext) *cobra.Command {
 				})...,
 			)
 
-			selected, err := prompter.GetInputFromPrompt(
-				deviceSelectionList,
-				&prompter.PromptSelectionOpts{
-					Label: "Select device you want to turn on",
-					Size:  ec.Cfg.DeviceListSize,
-				},
-			)
+			deviceSelectionList = append(deviceSelectionList, prompter.PromptSelection{
+				DisplayName: "DONE", Value: "DONE",
+			})
+
+			doMultiSelect, err := cmd.Flags().GetBool("multi-select")
 			if err != nil {
 				return err
 			}
 
-			return ec.SwitchBotAPIClient.SendDeviceControlCommands(
-				selected.Value,
-				turnOnRequestParam,
-			)
+			var selectedOpts []*prompter.PromptSelection
+			for {
+				selected, err := prompter.GetInputFromPrompt(
+					deviceSelectionList,
+					&prompter.PromptSelectionOpts{
+						Label: "Select device you want to turn on",
+						Size:  ec.Cfg.DeviceListSize,
+					},
+				)
+				if err != nil {
+					return err
+				}
+
+				if !doMultiSelect || selected.Value == "DONE" {
+					break
+				}
+
+				selectedOpts = append(selectedOpts, selected)
+			}
+
+			for _, selected := range selectedOpts {
+				if err := ec.SwitchBotAPIClient.SendDeviceControlCommands(
+					selected.Value,
+					turnOnRequestParam,
+				); err != nil {
+					return err
+				}
+			}
+
+			return nil
 		},
 	}
 }

@@ -50,13 +50,17 @@ func main() {
 		}
 	})
 
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	turnOnCmd := cmd.NewTurnOnCmd(ec)
+	turnOffCmd := cmd.NewTurnOffCmd(ec)
+	turnOnCmd.Flags().BoolP("multi-select", "m", true, "デバイスを複数選択する")
+	turnOffCmd.Flags().BoolP("multi-select", "m", true, "デバイスを複数選択する")
 
 	rootCmd.AddCommand(
 		cmd.NewVersionCmd(ec),
-		cmd.NewTurnOnCmd(ec),
-		cmd.NewTurnOffCmd(ec),
+		turnOnCmd,
+		turnOffCmd,
 		cmd.NewListCmd(ec),
+		cmd.NewInitCmd(ec),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
