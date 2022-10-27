@@ -26,29 +26,22 @@ import (
 
 	"github.com/kmtym1998/swbotctl/cfg"
 	"github.com/kmtym1998/swbotctl/cmd"
-	"github.com/spf13/cobra"
 )
 
 var cfgFilePath string
 var version string = "0.0.0"
 
 func main() {
-	ec := cfg.NewExecutionContext()
 	gc := cfg.NewGlobalConfig()
 	if err := gc.Prepare(cfgFilePath); err != nil {
 		log.Fatal(err)
 	}
+	ec := cfg.NewExecutionContext()
+	if err := ec.Prepare(version, gc.Token, gc.Secret, &gc); err != nil {
+		log.Fatal(err)
+	}
 
 	rootCmd := cmd.NewRootCmd()
-	cobra.OnInitialize(func() {
-		if err := ec.Prepare(version, gc.Token, gc.Secret, &gc); err != nil {
-			log.Fatal(err)
-		}
-
-		if err := gc.Prepare(cfgFilePath); err != nil {
-			log.Fatal(err)
-		}
-	})
 
 	turnOnCmd := cmd.NewTurnOnCmd(ec)
 	turnOffCmd := cmd.NewTurnOffCmd(ec)
@@ -60,7 +53,7 @@ func main() {
 		turnOnCmd,
 		turnOffCmd,
 		cmd.NewListCmd(ec),
-		cmd.NewInitCmd(ec),
+		cmd.NewInitCmd(ec, cfgFilePath),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
