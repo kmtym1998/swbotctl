@@ -30,3 +30,4 @@
 .history/
 
 tmp
+.DS_Store
